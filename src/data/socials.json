@@ -1,0 +1,8 @@
+[
+  { "name": "Discord", "icon": "discord", "url": "https://discord.gg/jE57PJ9Yta" },
+  { "name": "Instagram", "icon": "instagram", "url": "https://www.instagram.com/kettle.games/" },
+  { "name": "TikTok", "icon": "tiktok", "url": "https://www.tiktok.com/@kettle.games" },
+  { "name": "YouTube", "icon": "youtube", "url": "https://www.youtube.com/@kettledotgames" },
+  { "name": "Bluesky", "icon": "bluesky", "url": "https://bsky.app/profile/kettle.games" },
+  { "name": "X", "icon": "x", "url": "https://x.com/kettledotgames" }
+]

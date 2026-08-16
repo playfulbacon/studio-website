@@ -1,0 +1,29 @@
+[
+  {
+    "name": "Andy Bacon",
+    "role": "Design + Programming",
+    "photo": "andy.jpg",
+    "bio": "Former software prototyper at Apple on Vision Pro, and co-creator of DAVIGO, a finalist for VR Game of the Year at the 2024 Steam Awards.",
+    "links": [
+      { "label": "Bluesky", "icon": "bluesky", "url": "https://bsky.app/profile/playfulbacon.bsky.social" }
+    ]
+  },
+  {
+    "name": "Kassy Krahn",
+    "role": "3D Art",
+    "photo": "kassy.png",
+    "bio": "3D artist specializing in dioramas and props, previously at Next Level Games on Luigi's Mansion 3.",
+    "links": [
+      { "label": "Linktree", "icon": "link", "url": "https://linktr.ee/kassondrakrahn" }
+    ]
+  },
+  {
+    "name": "Adrian Talens",
+    "role": "Music + Sound",
+    "photo": "adrian.png",
+    "bio": "Sound designer and composer with a special interest in VR. His Poly Bridge soundtrack was featured in PC Gamer's article \"Listen to the best game music of the year\".",
+    "links": [
+      { "label": "Bluesky", "icon": "bluesky", "url": "https://bsky.app/profile/adriantalens.com" }
+    ]
+  }
+]

@@ -1,0 +1,46 @@
+---
+import socials from '../data/socials.json';
+import Icon from './Icon.astro';
+
+// Add or remove channels in src/data/socials.json; icons live in src/icons/.
+---
+
+<ul class="socials">
+  {socials.map((s) => (
+    <li>
+      <a href={s.url} target="_blank" rel="noopener">
+        <Icon name={s.icon} size={22} />
+        <span class="sr-only">{s.name}</span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .socials {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .socials a {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    color: var(--ink);
+    transition: background 0.15s ease, transform 0.15s ease;
+  }
+
+  .socials a:hover {
+    background: var(--accent);
+    transform: translateY(-2px);
+  }
+</style>

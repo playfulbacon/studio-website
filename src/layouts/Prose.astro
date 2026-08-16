@@ -1,0 +1,41 @@
+---
+import Base from './Base.astro';
+
+/**
+ * Simple readable layout for Markdown pages (privacy policy, etc.).
+ * Markdown files set `layout: ../layouts/Prose.astro` and a `title` in
+ * their frontmatter.
+ */
+const { frontmatter } = Astro.props;
+---
+
+<Base title={`${frontmatter.title} | Kettle Games`} description={frontmatter.description}>
+  <article class="section">
+    <div class="container prose card">
+      <h1>{frontmatter.title}</h1>
+      <slot />
+    </div>
+  </article>
+</Base>
+
+<style>
+  .prose {
+    max-width: 46rem;
+    padding: clamp(1.75rem, 5vw, 3.5rem);
+    margin-top: 2rem;
+  }
+
+  h1 {
+    font-size: var(--text-xl);
+  }
+
+  .prose :global(h2) {
+    font-size: var(--text-lg);
+    margin-top: 2.5rem;
+  }
+
+  .prose :global(p),
+  .prose :global(li) {
+    color: var(--ink-dim);
+  }
+</style>

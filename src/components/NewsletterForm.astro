@@ -1,0 +1,134 @@
+---
+import { SITE } from '../data/site';
+
+/**
+ * Newsletter signup. Submissions go to the Google Apps Script endpoint in
+ * src/data/site.ts, which appends them to a Google Sheet you own (see README).
+ * Until that endpoint is configured, an email fallback is shown instead.
+ */
+const endpoint = SITE.newsletterEndpoint;
+---
+
+<div class="newsletter card">
+  <h2 id="newsletter-title">Sign up for news and updates</h2>
+  <p>We'll send you the occasional news update!</p>
+
+  {
+    endpoint ? (
+      <form id="newsletter-form" aria-labelledby="newsletter-title" data-endpoint={endpoint}>
+        <div class="row">
+          <label class="sr-only" for="newsletter-email">Email address</label>
+          <input
+            id="newsletter-email"
+            type="email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="you@example.com"
+          />
+          <button class="btn" type="submit">Subscribe</button>
+        </div>
+        {/* Honeypot: hidden from people, tempting to bots. Filled = ignored. */}
+        <input
+          class="hp"
+          type="text"
+          name="company"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+        <p class="form-status" role="status" aria-live="polite"></p>
+      </form>
+    ) : (
+      <a class="btn" href={`mailto:${SITE.email}?subject=Subscribe%20me%20to%20the%20newsletter`}>
+        Email us to subscribe
+      </a>
+    )
+  }
+</div>
+
+{endpoint && (
+  <script>
+    const form = document.getElementById('newsletter-form') as HTMLFormElement;
+    const status = form.querySelector('.form-status') as HTMLParagraphElement;
+    const button = form.querySelector('button') as HTMLButtonElement;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      if ((data.get('company') as string)?.length) return; // honeypot tripped
+
+      button.disabled = true;
+      status.textContent = 'Subscribing…';
+      try {
+        const res = await fetch(form.dataset.endpoint!, {
+          method: 'POST',
+          body: new URLSearchParams({ email: data.get('email') as string }),
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        form.reset();
+        status.textContent = "You're on the list — thanks!";
+      } catch {
+        status.innerHTML =
+          'Something went wrong. Please try again, or email us at ' +
+          '<a href="mailto:hello@kettle.games">hello@kettle.games</a>.';
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+)}
+
+<style>
+  .newsletter {
+    text-align: center;
+    padding: clamp(2rem, 5vw, 3rem);
+  }
+
+  h2 {
+    font-size: var(--text-lg);
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    color: var(--ink-dim);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  input[type='email'] {
+    flex: 1 1 16rem;
+    max-width: 24rem;
+    padding: 0.8rem 1.2rem;
+    border-radius: var(--radius-pill);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.95);
+    color: #14203a;
+    font: 400 1rem var(--font-body);
+  }
+
+  .hp {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+
+  .form-status {
+    min-height: 1.5em;
+    margin: 0.9rem 0 0;
+    font-size: var(--text-sm);
+    color: var(--ink);
+  }
+
+  .form-status :global(a) {
+    color: inherit;
+  }
+</style>

@@ -1,0 +1,158 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import NewsletterForm from '../components/NewsletterForm.astro';
+import GameCard from '../components/GameCard.astro';
+import TeamCard from '../components/TeamCard.astro';
+import SocialLinks from '../components/SocialLinks.astro';
+import games from '../data/games.json';
+import faq from '../data/faq.json';
+import team from '../data/team.json';
+import logo from '../assets/kettle-logo.png';
+---
+
+<Base>
+  <!-- Hero / About -->
+  <section class="section hero" id="about">
+    <div class="container">
+      <Image src={logo} alt="Kettle Games" width={420} densities={[1, 2]} class="hero-logo" loading="eager" />
+      <p class="tagline">
+        Kettle Games is an indie game studio exploring the future of play. We're a small
+        team based in Vancouver, Canada working on our debut title, Wordbound.
+      </p>
+    </div>
+  </section>
+
+  <!-- Newsletter -->
+  <section class="section" id="newsletter">
+    <div class="container narrow">
+      <NewsletterForm />
+    </div>
+  </section>
+
+  <!-- Games -->
+  <section class="section" id="games">
+    <div class="container">
+      <h2 class="section-title">Our Games</h2>
+      {games.map((game) => <GameCard {...game} />)}
+      <div class="community">
+        <h3>Join the community</h3>
+        <SocialLinks />
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container narrow">
+      <h2 class="section-title">FAQ</h2>
+      {faq.map((item) => (
+        <details class="card faq-item">
+          <summary>{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="section" id="team">
+    <div class="container">
+      <h2 class="section-title">The Team</h2>
+      <ul class="team-grid">
+        {team.map((member) => <TeamCard {...member} />)}
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .container.narrow {
+    max-width: 46rem;
+  }
+
+  /* Hero */
+  .hero {
+    padding-top: clamp(3rem, 8vw, 6rem);
+    text-align: center;
+  }
+
+  .hero-logo {
+    width: min(70vw, 24rem);
+    height: auto;
+    margin-inline: auto;
+  }
+
+  .tagline {
+    max-width: 46rem;
+    margin: 2rem auto 0;
+    font-size: var(--text-hero);
+    font-weight: 300;
+    line-height: 1.45;
+    text-wrap: balance;
+  }
+
+  /* Games */
+  .community {
+    margin-top: 3rem;
+    text-align: center;
+  }
+
+  .community h3 {
+    font-size: var(--text-lg);
+    margin-bottom: 1.25rem;
+  }
+
+  /* FAQ */
+  .faq-item {
+    margin-bottom: 1rem;
+  }
+
+  .faq-item summary {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1.1rem 1.5rem;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: var(--text-base);
+    list-style: none;
+  }
+
+  .faq-item summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .faq-item summary::before {
+    content: '▸';
+    flex-shrink: 0;
+    color: var(--accent);
+    transition: rotate 0.15s ease;
+  }
+
+  .faq-item[open] summary::before {
+    rotate: 90deg;
+  }
+
+  .faq-item[open] summary {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .faq-item p {
+    padding: 1rem 1.5rem;
+    margin: 0;
+    color: var(--ink-dim);
+  }
+
+  /* Team */
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(16rem, 100%), 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-width: 60rem;
+    margin-inline: auto;
+  }
+</style>

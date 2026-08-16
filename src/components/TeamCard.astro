@@ -1,0 +1,101 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+
+/**
+ * One card per entry in src/data/team.json. To add a team member:
+ * drop a square photo into src/assets/team/ and add an entry to that file.
+ */
+interface Props {
+  name: string;
+  role: string;
+  photo: string;
+  bio: string;
+  links: { label: string; icon?: string; url: string }[];
+}
+
+const { name, role, photo, bio, links } = Astro.props;
+
+const photos = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/team/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+
+const photoSrc = photos[`../assets/team/${photo}`]?.default;
+if (!photoSrc) throw new Error(`Team photo "${photo}" not found in src/assets/team/`);
+---
+
+<li class="card member">
+  <Image src={photoSrc} alt={`Photo of ${name}`} width={320} densities={[1, 2]} class="photo" />
+  <h3>{name}</h3>
+  <p class="role">{role}</p>
+  <p class="bio">{bio}</p>
+  {links.length > 0 && (
+    <ul class="links">
+      {links.map((link) => (
+        <li>
+          <a href={link.url} target="_blank" rel="noopener">
+            {link.icon && <Icon name={link.icon} size={16} />}
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</li>
+
+<style>
+  .member {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+  }
+
+  .photo {
+    width: clamp(8rem, 20vw, 10rem);
+    height: auto;
+    border-radius: 50%;
+    border: 4px solid rgba(255, 255, 255, 0.25);
+    margin-bottom: 1.25rem;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    margin-bottom: 0.15rem;
+  }
+
+  .role {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.9rem;
+  }
+
+  .bio {
+    color: var(--ink-dim);
+    font-size: var(--text-sm);
+    margin-bottom: 0.75rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.25rem;
+    margin: auto 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+</style>

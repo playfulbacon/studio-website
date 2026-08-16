@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+
+/**
+ * One card per entry in src/data/games.json. To add a game: drop its logo or
+ * key art into src/assets/ and add an entry to that file.
+ */
+interface Props {
+  title: string;
+  logo: string;
+  status?: string;
+  description: string;
+  links: { label: string; icon?: string; url: string }[];
+}
+
+const { title, logo, status, description, links } = Astro.props;
+
+const art = import.meta.glob<{ default: ImageMetadata }>(
+  '../assets/*.{png,jpg,jpeg,webp}',
+  { eager: true }
+);
+
+const logoSrc = art[`../assets/${logo}`]?.default;
+if (!logoSrc) throw new Error(`Game art "${logo}" not found in src/assets/`);
+---
+
+<article class="card game">
+  <Image src={logoSrc} alt={`${title} logo`} width={760} densities={[1, 2]} class="game-logo" />
+  {status && <p class="status">{status}</p>}
+  <p class="description">{description}</p>
+  <div class="actions">
+    {links.map((link) => (
+      <a class="btn" href={link.url} target="_blank" rel="noopener">
+        {link.icon && <Icon name={link.icon} size={20} />}
+        {link.label}
+      </a>
+    ))}
+  </div>
+</article>
+
+<style>
+  .game {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: clamp(2rem, 5vw, 3.5rem);
+  }
+
+  .game-logo {
+    width: min(100%, 34rem);
+    height: auto;
+  }
+
+  .status {
+    margin: 1.5rem 0 0.5rem;
+    padding: 0.35rem 1.1rem;
+    border-radius: var(--radius-pill);
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .description {
+    max-width: 44rem;
+    font-size: var(--text-base);
+    color: var(--ink-dim);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+</style>
