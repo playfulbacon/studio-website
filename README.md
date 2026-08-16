@@ -29,7 +29,7 @@ All content lives in small data files — no HTML required for routine updates.
 | Add/remove social links    | `src/data/socials.json` + icon in `src/icons/`     |
 | Change email/site metadata | `src/data/site.ts`                                 |
 | Edit hero text             | `src/pages/index.astro`                            |
-| Edit privacy/accessibility | `src/pages/*.md`                                   |
+| Edit the privacy policy    | `src/pages/wordbound-privacy-policy.md`            |
 | Adjust colors/spacing      | `src/styles/global.css` (CSS variables at the top) |
 
 ### Example: adding a team member
@@ -104,9 +104,9 @@ to point the real domain at it:
    it lives — or transfer to a registrar like Porkbun/Cloudflare later if
    you want cheaper renewals).
 
-Old deep links: `/wordbound-privacy-policy` and `/accessibility-statement`
-keep their Wix-era URLs. The Wix blog posts were intentionally not migrated,
-so those `/post/...` URLs will 404.
+The `/wordbound-privacy-policy` deep link keeps its Wix-era URL. The Wix
+blog posts were intentionally not migrated, so those `/post/...` URLs will
+404.
 
 ## How it's put together
 
