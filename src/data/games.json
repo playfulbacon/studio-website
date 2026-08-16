@@ -4,6 +4,7 @@
     "logo": "wordbound-logo.png",
     "status": "Coming soon",
     "description": "Wordbound is a cozy puzzle game where you transform words into objects to repair a scrambled world, coming soon to Steam and Meta Quest.",
+    "trailerYouTubeId": "7P-21uGiyV0",
     "links": [
       { "label": "Wishlist on Steam", "icon": "steam", "url": "https://store.steampowered.com/app/4073540" },
       { "label": "Wishlist on Meta Quest", "icon": "meta", "url": "https://www.meta.com/en-gb/experiences/30406307525619690" }

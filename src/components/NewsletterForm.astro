@@ -13,71 +13,80 @@ const endpoint = SITE.newsletterEndpoint;
   <h2 id="newsletter-title">Sign up for news and updates</h2>
   <p>We'll send you the occasional news update!</p>
 
-  {
-    endpoint ? (
-      <form id="newsletter-form" aria-labelledby="newsletter-title" data-endpoint={endpoint}>
-        <div class="row">
-          <label class="sr-only" for="newsletter-email">Email address</label>
-          <input
-            id="newsletter-email"
-            type="email"
-            name="email"
-            required
-            autocomplete="email"
-            placeholder="you@example.com"
-          />
-          <button class="btn" type="submit">Subscribe</button>
-        </div>
-        {/* Honeypot: hidden from people, tempting to bots. Filled = ignored. */}
-        <input
-          class="hp"
-          type="text"
-          name="company"
-          tabindex="-1"
-          autocomplete="off"
-          aria-hidden="true"
-        />
-        <p class="form-status" role="status" aria-live="polite"></p>
-      </form>
-    ) : (
-      <a class="btn" href={`mailto:${SITE.email}?subject=Subscribe%20me%20to%20the%20newsletter`}>
-        Email us to subscribe
-      </a>
-    )
-  }
+  <form
+    id="newsletter-form"
+    aria-labelledby="newsletter-title"
+    data-endpoint={endpoint}
+    data-email={SITE.email}
+  >
+    <div class="row">
+      <label class="sr-only" for="newsletter-email">Email address</label>
+      <input
+        id="newsletter-email"
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder="you@example.com"
+      />
+      <button class="btn" type="submit">Subscribe</button>
+    </div>
+    {/* Honeypot: hidden from people, tempting to bots. Filled = ignored. */}
+    <input
+      class="hp"
+      type="text"
+      name="company"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </form>
 </div>
 
-{endpoint && (
-  <script>
-    const form = document.getElementById('newsletter-form') as HTMLFormElement;
-    const status = form.querySelector('.form-status') as HTMLParagraphElement;
-    const button = form.querySelector('button') as HTMLButtonElement;
+<script>
+  const form = document.getElementById('newsletter-form') as HTMLFormElement;
+  const status = form.querySelector('.form-status') as HTMLParagraphElement;
+  const button = form.querySelector('button') as HTMLButtonElement;
 
-    form.addEventListener('submit', async (event) => {
-      event.preventDefault();
-      const data = new FormData(form);
-      if ((data.get('company') as string)?.length) return; // honeypot tripped
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+    if ((data.get('company') as string)?.length) return; // honeypot tripped
+    const email = data.get('email') as string;
 
-      button.disabled = true;
-      status.textContent = 'Subscribing…';
-      try {
-        const res = await fetch(form.dataset.endpoint!, {
-          method: 'POST',
-          body: new URLSearchParams({ email: data.get('email') as string }),
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        form.reset();
-        status.textContent = "You're on the list — thanks!";
-      } catch {
-        status.innerHTML =
-          'Something went wrong. Please try again, or email us at ' +
-          '<a href="mailto:hello@kettle.games">hello@kettle.games</a>.';
-      } finally {
-        button.disabled = false;
-      }
-    });
-  </script>
-)}
+    // No collection endpoint configured yet: hand off to the visitor's
+    // email app instead so signups are never lost.
+    if (!form.dataset.endpoint) {
+      const contact = form.dataset.email!;
+      location.href =
+        `mailto:${contact}?subject=${encodeURIComponent('Subscribe me to the newsletter')}` +
+        `&body=${encodeURIComponent(`Please subscribe ${email} to Kettle Games news and updates.`)}`;
+      status.innerHTML =
+        'Opening your email app… If nothing happens, email us at ' +
+        `<a href="mailto:${contact}">${contact}</a>.`;
+      return;
+    }
+
+    button.disabled = true;
+    status.textContent = 'Subscribing…';
+    try {
+      const res = await fetch(form.dataset.endpoint, {
+        method: 'POST',
+        body: new URLSearchParams({ email }),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      form.reset();
+      status.textContent = "You're on the list — thanks!";
+    } catch {
+      status.innerHTML =
+        'Something went wrong. Please try again, or email us at ' +
+        '<a href="mailto:hello@kettle.games">hello@kettle.games</a>.';
+    } finally {
+      button.disabled = false;
+    }
+  });
+</script>
 
 <style>
   .newsletter {

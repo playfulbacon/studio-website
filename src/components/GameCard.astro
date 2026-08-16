@@ -11,10 +11,12 @@ interface Props {
   logo: string;
   status?: string;
   description: string;
+  /** YouTube video ID (the part after watch?v=) for the trailer embed. */
+  trailerYouTubeId?: string;
   links: { label: string; icon?: string; url: string }[];
 }
 
-const { title, logo, status, description, links } = Astro.props;
+const { title, logo, status, description, trailerYouTubeId, links } = Astro.props;
 
 const art = import.meta.glob<{ default: ImageMetadata }>(
   '../assets/*.{png,jpg,jpeg,webp}',
@@ -29,6 +31,17 @@ if (!logoSrc) throw new Error(`Game art "${logo}" not found in src/assets/`);
   <Image src={logoSrc} alt={`${title} logo`} width={760} densities={[1, 2]} class="game-logo" />
   {status && <p class="status">{status}</p>}
   <p class="description">{description}</p>
+  {trailerYouTubeId && (
+    <div class="trailer">
+      <iframe
+        src={`https://www.youtube-nocookie.com/embed/${trailerYouTubeId}`}
+        title={`${title} trailer`}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+      />
+    </div>
+  )}
   <div class="actions">
     {links.map((link) => (
       <a class="btn" href={link.url} target="_blank" rel="noopener">
@@ -69,6 +82,20 @@ if (!logoSrc) throw new Error(`Game art "${logo}" not found in src/assets/`);
     max-width: 44rem;
     font-size: var(--text-base);
     color: var(--ink-dim);
+  }
+
+  .trailer {
+    width: min(100%, 44rem);
+    margin-block: 1rem 1.5rem;
+  }
+
+  .trailer iframe {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border: 0;
+    border-radius: calc(var(--radius) - 0.25rem);
+    background: #000;
   }
 
   .actions {
